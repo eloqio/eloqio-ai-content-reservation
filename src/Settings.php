@@ -1,7 +1,4 @@
 <?php
-/**
- * Admin settings page using the classic Settings API.
- */
 
 namespace ELOQIO\AiContentReservation;
 
@@ -9,9 +6,9 @@ defined( 'ABSPATH' ) || exit;
 
 final class Settings {
 
-	public const PAGE_SLUG    = 'ai-content-reservation';
-	public const OPTION_GROUP = 'eloqio_acr';
-	public const SECTION_MAIN = 'eloqio_acr_main';
+	private const PAGE_SLUG    = 'ai-content-reservation';
+	private const OPTION_GROUP = 'eloqio_acr';
+	private const SECTION_MAIN = 'eloqio_acr_main';
 
 	private Plugin $plugin;
 
@@ -90,7 +87,7 @@ final class Settings {
 
 		return [
 			'enabled'         => ! empty( $input['enabled'] ),
-			'tdm_reservation' => isset( $input['tdm_reservation'] ) && (int) $input['tdm_reservation'] === 0 ? 0 : 1,
+			'tdm_reservation' => (int) ( $input['tdm_reservation'] ?? 1 ),
 			'tdm_policy'      => isset( $input['tdm_policy'] ) ? esc_url_raw( wp_unslash( (string) $input['tdm_policy'] ) ) : '',
 		];
 	}

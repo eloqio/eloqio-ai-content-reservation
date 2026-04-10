@@ -19,10 +19,11 @@ defined( 'ABSPATH' ) || exit;
 define( 'ELOQIO_ACR_VERSION', '1.0.0' );
 define( 'ELOQIO_ACR_FILE', __FILE__ );
 define( 'ELOQIO_ACR_DIR', plugin_dir_path( __FILE__ ) );
-define( 'ELOQIO_ACR_URL', plugin_dir_url( __FILE__ ) );
 
-require_once ELOQIO_ACR_DIR . 'src/Autoloader.php';
-\ELOQIO\AiContentReservation\Autoloader::register();
+foreach ( [ 'Plugin', 'Endpoint', 'Headers', 'Settings', 'SiteHealth' ] as $eloqio_acr_class ) {
+	require_once ELOQIO_ACR_DIR . 'src/' . $eloqio_acr_class . '.php';
+}
+unset( $eloqio_acr_class );
 
 add_action( 'plugins_loaded', static function () {
 	\ELOQIO\AiContentReservation\Plugin::instance()->boot();

@@ -1,6 +1,6 @@
 === AI Content Reservation (TDMRep) ===
 Contributors: eloqio, haroldparis
-Tags: ai, privacy, robots, copyright, seo
+Tags: ai, privacy, tdm, copyright, seo
 Requires at least: 6.5
 Tested up to: 6.8
 Requires PHP: 7.4

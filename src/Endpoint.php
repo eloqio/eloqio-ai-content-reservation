@@ -1,7 +1,6 @@
 <?php
-/**
- * Serves /.well-known/tdmrep.json directly, without writing to disk.
- */
+// Served directly from a hook rather than a physical file to avoid conflicts
+// with Let's Encrypt and read-only hosting.
 
 namespace ELOQIO\AiContentReservation;
 
@@ -9,8 +8,9 @@ defined( 'ABSPATH' ) || exit;
 
 final class Endpoint {
 
-	public const PATH         = '/.well-known/tdmrep.json';
-	public const CONTENT_TYPE = 'application/tdmrep+json; charset=utf-8';
+	public const PATH = '/.well-known/tdmrep.json';
+
+	private const CONTENT_TYPE = 'application/tdmrep+json; charset=utf-8';
 
 	private Plugin $plugin;
 
@@ -23,12 +23,8 @@ final class Endpoint {
 	}
 
 	public function maybe_serve(): void {
-		if ( ! $this->plugin->is_enabled() ) {
-			return;
-		}
-
 		$request_uri = isset( $_SERVER['REQUEST_URI'] )
-			? esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) )
+			? wp_unslash( $_SERVER['REQUEST_URI'] )
 			: '';
 
 		$path = wp_parse_url( $request_uri, PHP_URL_PATH );
@@ -37,8 +33,12 @@ final class Endpoint {
 			return;
 		}
 
-		nocache_headers();
+		if ( ! $this->plugin->is_enabled() ) {
+			return;
+		}
+
 		header( 'Content-Type: ' . self::CONTENT_TYPE );
+		header( 'Cache-Control: public, max-age=3600' );
 		header( 'Access-Control-Allow-Origin: *' );
 
 		echo wp_json_encode( $this->build_payload(), JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT );
@@ -46,8 +46,6 @@ final class Endpoint {
 	}
 
 	/**
-	 * Builds the TDMRep JSON payload.
-	 *
 	 * @return array<int, array<string, mixed>>
 	 */
 	public function build_payload(): array {

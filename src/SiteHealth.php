@@ -1,7 +1,4 @@
 <?php
-/**
- * Async Site Health test that verifies the TDMRep endpoint responds.
- */
 
 namespace ELOQIO\AiContentReservation;
 
@@ -9,9 +6,9 @@ defined( 'ABSPATH' ) || exit;
 
 final class SiteHealth {
 
-	public const TEST_ID   = 'eloqio_acr_endpoint';
-	public const REST_NS   = 'eloqio-acr/v1';
-	public const REST_PATH = '/site-health-endpoint';
+	private const TEST_ID   = 'eloqio_acr_endpoint';
+	private const REST_NS   = 'eloqio-acr/v1';
+	private const REST_PATH = '/site-health-endpoint';
 
 	private Plugin $plugin;
 
@@ -48,7 +45,7 @@ final class SiteHealth {
 				'methods'             => 'GET',
 				'callback'            => [ $this, 'run_test' ],
 				'permission_callback' => static function () {
-					return current_user_can( 'view_site_health_checks' ) || current_user_can( 'manage_options' );
+					return current_user_can( 'manage_options' );
 				},
 			]
 		);
@@ -58,12 +55,11 @@ final class SiteHealth {
 	 * @return array<string, mixed>
 	 */
 	public function run_test(): array {
-		$label = __( 'TDMRep endpoint reachability', 'ai-content-reservation' );
-		$url   = home_url( Endpoint::PATH );
+		$url = home_url( Endpoint::PATH );
 
 		$base = [
 			'test'        => self::TEST_ID,
-			'label'       => $label,
+			'label'       => __( 'TDMRep endpoint reachability', 'ai-content-reservation' ),
 			'badge'       => [
 				'label' => __( 'AI Content Reservation', 'ai-content-reservation' ),
 				'color' => 'blue',
@@ -79,13 +75,13 @@ final class SiteHealth {
 			return $base;
 		}
 
-		$response = wp_remote_get(
-			$url,
-			[
-				'timeout'   => 5,
-				'sslverify' => false,
-			]
-		);
+		$response = wp_safe_remote_get( $url, [ 'timeout' => 5 ] );
+
+		// Self-signed certs on dev environments: retry without verification when the error
+		// is clearly an SSL handshake failure, not a connection problem.
+		if ( is_wp_error( $response ) && false !== stripos( $response->get_error_message(), 'ssl' ) ) {
+			$response = wp_safe_remote_get( $url, [ 'timeout' => 5, 'sslverify' => false ] );
+		}
 
 		if ( is_wp_error( $response ) ) {
 			$base['status']      = 'critical';
