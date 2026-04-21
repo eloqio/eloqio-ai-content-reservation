@@ -9,6 +9,7 @@
 .DS_Store
 .idea
 .vscode
+.claude
 node_modules
 vendor
 tests
