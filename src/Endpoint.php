@@ -41,7 +41,7 @@ final class Endpoint {
 		header( 'Cache-Control: public, max-age=3600' );
 		header( 'Access-Control-Allow-Origin: *' );
 
-		echo wp_json_encode( $this->build_payload(), JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT );
+		echo wp_json_encode( $this->build_payload(), JSON_PRETTY_PRINT );
 		exit;
 	}
 
