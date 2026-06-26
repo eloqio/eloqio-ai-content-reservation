@@ -55,6 +55,15 @@ final class Plugin {
 		$stored = get_option( self::OPTION_KEY, [] );
 		$merged = wp_parse_args( is_array( $stored ) ? $stored : [], self::DEFAULTS );
 
+		/**
+		 * Permet à un thème ou un plugin de piloter la réservation, pour tenir
+		 * la posture IA depuis une source unique (ex. choreo-engine en SSOT).
+		 * Le plugin reste autonome : sans hook, la valeur vient des réglages.
+		 *
+		 * @param array{enabled:bool, tdm_reservation:int, tdm_policy:string} $merged
+		 */
+		$merged = wp_parse_args( apply_filters( 'eloqio_acr_settings', $merged ), self::DEFAULTS );
+
 		$this->cache = [
 			'enabled'         => (bool) $merged['enabled'],
 			'tdm_reservation' => 0 === (int) $merged['tdm_reservation'] ? 0 : 1,

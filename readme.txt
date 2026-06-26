@@ -4,7 +4,7 @@ Tags: ai, privacy, tdm, copyright, seo
 Requires at least: 6.5
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,6 +75,9 @@ The current version applies to the entire site (`location: /`). Per-post granula
 
 == Changelog ==
 
+= 1.0.2 =
+* Add the `eloqio_acr_settings` filter so a theme or companion plugin can drive the reservation value from a single source of truth, while the plugin stays fully autonomous without any hook.
+
 = 1.0.1 =
 * Security: drop the `JSON_UNESCAPED_SLASHES` flag on the TDMRep endpoint output, per the WordPress.org review feedback on late escaping of echoed data.
 
@@ -88,6 +91,9 @@ The current version applies to the entire site (`location: /`). Per-post granula
 * French and English translations included.
 
 == Upgrade Notice ==
+
+= 1.0.2 =
+Adds the `eloqio_acr_settings` developer filter. No change to default behaviour.
 
 = 1.0.1 =
 Security hardening on the TDMRep JSON endpoint following WordPress.org review feedback.

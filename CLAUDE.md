@@ -12,7 +12,10 @@ Pas de CLI Python ici, le `~/Code/CLAUDE.md` ne s'applique pas.
   manuel des classes (pas de Composer), boot via `plugins_loaded`.
 - `src/Plugin.php` : singleton, source de vérité des settings, cache
   mémoire d'une requête. Option WP `eloqio_acr_settings` (clé
-  `Plugin::OPTION_KEY`), defaults dans `Plugin::DEFAULTS`.
+  `Plugin::OPTION_KEY`), defaults dans `Plugin::DEFAULTS`. Les settings
+  passent par le filtre `eloqio_acr_settings` : un thème ou un plugin peut
+  ainsi piloter la réservation depuis une source unique (ex. choreo-engine
+  en SSOT de la politique IA). Le plugin reste autonome sans hook.
 - `src/Endpoint.php` : sert le JSON sur hook `init` priorité 0 en
   matchant `REQUEST_URI`. Pas de rewrite rule, pas de fichier physique
   (compatible Let's Encrypt et hosts read-only).
@@ -44,6 +47,12 @@ Pas de CLI Python ici, le `~/Code/CLAUDE.md` ne s'applique pas.
 - Bumps de version à synchroniser dans 3 endroits : header du fichier
   principal, constante `ELOQIO_ACR_VERSION`, `Stable tag` du
   `readme.txt`.
+
+## Tests
+
+- `tests/run-unit.php` : tests unitaires standalone (PHP CLI, zéro
+  dépendance, dans l'esprit du plugin — pas de PHPUnit, pas de wp-env).
+  Stubs WordPress minimaux en tête de fichier. Lancer : `php tests/run-unit.php`.
 
 ## Gotchas
 
